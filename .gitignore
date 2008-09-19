@@ -1,0 +1,6 @@
+*_ReSharper*
+*_Resharper*
+*\bin\*
+*\obj\*
+*resharper.user*
+*.suo
