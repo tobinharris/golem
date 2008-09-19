@@ -1,5 +1,0 @@
-C:\Code\Rakish\Rakish.Core\bin\Debug\Rakish.Core.dll
-C:\Code\Rakish\Rakish.Core\bin\Debug\Rakish.Core.pdb
-C:\Code\Rakish\Rakish.Core\obj\Debug\ResolveAssemblyReference.cache
-C:\Code\Rakish\Rakish.Core\obj\Debug\Rakish.Core.dll
-C:\Code\Rakish\Rakish.Core\obj\Debug\Rakish.Core.pdb

@@ -1,9 +1,0 @@
-C:\Code\Rakish\Rakish.Test\bin\Debug\Rakish.Test.dll
-C:\Code\Rakish\Rakish.Test\bin\Debug\Rakish.Test.pdb
-C:\Code\Rakish\Rakish.Test\obj\Debug\ResolveAssemblyReference.cache
-C:\Code\Rakish\Rakish.Test\obj\Debug\Rakish.Test.dll
-C:\Code\Rakish\Rakish.Test\obj\Debug\Rakish.Test.pdb
-C:\Code\Rakish\Rakish.Test\bin\Debug\Rakish.Core.dll
-C:\Code\Rakish\Rakish.Test\bin\Debug\Rakish.Core.pdb
-C:\Code\Rakish\Rakish.Test\bin\Debug\nunit.framework.dll
-C:\Code\Rakish\Rakish.Test\bin\Debug\nunit.framework.xml
