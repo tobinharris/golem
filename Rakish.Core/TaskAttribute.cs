@@ -7,6 +7,14 @@ namespace Rakish.Core
 {
     public class TaskAttribute : Attribute
     {
-        public string Description { get; set; }
+        public string Name { get; set; }
+        public string Help { get; set; }
+        public string[] After{get;set;}
+        public TaskAttribute()
+        {
+            After = new string[0];
+        }
     }
+
+    
 }

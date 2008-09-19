@@ -2,8 +2,12 @@ using System;
 
 namespace Rakish.Core
 {
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class RecipeAttribute : Attribute
     {
-        public string Description { get; set; }
+        public string Name { get; set; }
+
+        
+            
     }
 }

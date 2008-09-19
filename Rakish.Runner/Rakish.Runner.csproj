@@ -63,4 +63,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)rakish.exe"
+copy "$(TargetDir)"*.dll "$(SolutionDir)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
