@@ -10,18 +10,23 @@ namespace Rakish.Test
     [TestFixture]
     public class RecipeDiscoveryFixture
     {
-        readonly RecipeFinder finder = new RecipeFinder();
+        private RecipeFinder finder;
         IList<Recipe> found;
 
         [SetUp]
         public void Before_Each_Test_Is_Run()
         {
-            found = finder.FindRecipesInAssemblies();   
+            finder = new RecipeFinder(Environment.CurrentDirectory + "..\\..\\..\\..\\");
+            found = finder.FindRecipesInFiles();   
         }
 
         [Test]
         public void Can_Discover_Recipes()
         {
+            foreach(var r in found)
+            {
+                Console.WriteLine(r.Name);
+            }
             Assert.AreEqual(3, found.Count);
         }
 
@@ -46,7 +51,7 @@ namespace Rakish.Test
         public void Can_Run_Task()
         {
             var recipeInfo = found[1];
-            var runner = new TaskRunner();
+            var runner = new TaskRunner(finder);
             runner.Run(recipeInfo, recipeInfo.Tasks[0]);
             Assert.AreEqual("TEST", AppDomain.CurrentDomain.GetData("TEST"));
         }
@@ -54,7 +59,7 @@ namespace Rakish.Test
         [Test]
         public void Can_Run_Task_By_Name()
         {
-            var runner = new TaskRunner();
+            var runner = new TaskRunner(finder);
             runner.Run("demo","list");
             Assert.AreEqual("LIST", AppDomain.CurrentDomain.GetData("TEST"));
             runner.Run("demo", "stats");
@@ -79,7 +84,7 @@ namespace Rakish.Test
         [Test]
         public void Functions_Are_Called_In_Correct_Order_With_Dependencies()
         {
-            var runner = new TaskRunner();
+            var runner = new TaskRunner(finder);
             runner.Run("demo2", "one");          
 
         }
@@ -87,7 +92,7 @@ namespace Rakish.Test
         [Test]
         public void Can_Infer_Recipe_Category_And_Task_Name()
         {
-            var runner = new TaskRunner();
+            var runner = new TaskRunner(finder);
             runner.Run("demo3", "hello");          
         }
 

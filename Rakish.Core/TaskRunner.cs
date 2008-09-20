@@ -6,6 +6,13 @@ namespace Rakish.Core
 {
     public class TaskRunner
     {
+        private RecipeFinder finder;
+        
+        public TaskRunner(RecipeFinder aFinder)
+        {
+            finder = aFinder;
+        }
+
         public void Run(Recipe recipe, Task task)
         {
             var recipeInstance = Activator.CreateInstance(recipe.Class);
@@ -13,10 +20,11 @@ namespace Rakish.Core
             task.Method.Invoke(recipeInstance, null);
         }
 
+        //TODO: Run is Too long
+        //TODO: Nesting depth is too deep
         public void Run(string recipeName, string taskName)
         {
-            var finder = new RecipeFinder();
-            var found = finder.FindRecipesInAssemblies();
+            var found = finder.FindRecipesInFiles();
             
             foreach(var r in found)
             {
@@ -42,7 +50,7 @@ namespace Rakish.Core
 //        {
 //            var manifest = new RunManifest();
 //            var finder = new RecipeFinder();
-//            var found = finder.FindRecipesInAssemblies();
+//            var found = finder.FindRecipesInFiles();
 //
 //            foreach (var r in found)
 //            {

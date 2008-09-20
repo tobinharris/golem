@@ -64,7 +64,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)rakish.exe"
-copy "$(TargetDir)"*.dll "$(SolutionDir)"</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetPath)" "C:\Program Files\Rakish\rakish.exe"
+copy "$(TargetDir)"*.dll "C:\Program Files\Rakish"</PostBuildEvent>
   </PropertyGroup>
 </Project>

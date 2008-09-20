@@ -46,15 +46,17 @@ namespace Rakish.Test
         [Task(Name="stats", Help="Lists line counts for all types of files")]
         public void Stats()
         {
-            string rootDir = Environment.CurrentDirectory;// +"..\\..\\..\\..\\";
+            string rootDir = Locations.StartDirs[0];
+            Console.WriteLine(rootDir);
             var count = new Dictionary<string, long>() { { "lines", 0 }, { "classes", 0 }, { "files", 0 }, { "enums", 0 }, { "methods", 0 } };
             GetLineCount(rootDir, "*.cs", count);
 
             
             Console.WriteLine("c# Files:\t\t{0}", count["files"]);
             Console.WriteLine("c# Classes:  \t{0}", count["classes"]);
-            Console.WriteLine("c# Methods:\t\t{0}", count["methods"]);
+            Console.WriteLine("c# Methods:  \t{0}", count["methods"]);
             Console.WriteLine("c# Lines:\t\t{0}", count["lines"]);
+            Console.WriteLine("Avg Methods Per Class:\t\t{0}", count["methods"]/count["classes"]);
             
         }
         
@@ -72,13 +74,13 @@ namespace Rakish.Test
                     var line = r.ReadLine();
                     while(line != null)
                     {
-                        if (fileFilter == "*.cs" && Regex.Match(line, ".+public|private|internal|protected.+class.+").Length > 0)
+                        if (fileFilter == "*.cs" && Regex.Match(line, ".+[public|private|internal|protected].+class.+").Length > 0)
                             counts["classes"] += 1;
 
-                        if (fileFilter == "*.cs" && Regex.Match(line, ".+public|private|internal|protected.+enum.+").Length > 0)
+                        if (fileFilter == "*.cs" && Regex.Match(line, ".+[public|private|internal|protected].+enum.+").Length > 0)
                             counts["enums"] += 1;
 
-                        if (fileFilter == "*.cs" && Regex.Match(line, ".+public|private|internal|protected.+\\(.*\\).+").Length > 0)
+                        if (fileFilter == "*.cs" && Regex.Match(line, ".+[public|private|internal|protected].+\\(.*\\).+").Length > 0)
                             counts["methods"] += 1;
 
                         counts["lines"] += 1;

@@ -10,8 +10,8 @@ namespace Rakish.Runner
     {
         public static void Main(string[] args)
         {
-            var finder = new RecipeFinder();
-            var found = finder.FindRecipesInAssemblies();
+            var finder = new RecipeFinder(Environment.CurrentDirectory);
+            var found = finder.FindRecipesInFiles();
 
             if(args.Length > 0)
             {
@@ -22,7 +22,7 @@ namespace Rakish.Runner
                 }
 
                 var parts = args[0].Split(':');
-                var runner = new TaskRunner();
+                var runner = new TaskRunner(finder);
                 
                 if(parts.Length == 2)
                     runner.Run(parts[0],parts[1]);

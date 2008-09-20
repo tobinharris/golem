@@ -2,108 +2,216 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Linq;
 
 namespace Rakish.Core
 {
+
+ 
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class RecipeFinder
     {
-        public IList<Recipe> FindRecipesInAssemblies()
-        {
-            var startDir = Environment.CurrentDirectory;
-            return FindRecipesInAssemblies(startDir);
-        }
+        
+        //scanning directories 
+        //loading assemblies
+        //building tree of recipes
+        //reflecting on types
 
-        public IList<Recipe> FindRecipesInAssemblies(params string[] startDirs)
+        private string[] startDirs;
+
+        public RecipeFinder()
+        {
+            
+        }
+        public RecipeFinder(params string[] startDirs) : this()
+        {
+            this.startDirs = startDirs;
+
+            if(startDirs == null)
+            {
+                Locations.StartDirs = new string[] { Environment.CurrentDirectory };
+                this.startDirs = Locations.StartDirs;
+            }
+
+            
+        }
+        //TODO: Too many variables
+        public IList<Recipe> FindRecipesInFiles()
         {
             var recipeClasses = new List<Recipe>();
+            
+            //TODO: Fix this
+            Locations.StartDirs = startDirs;
 
-            foreach(var startDir in startDirs)
+            foreach (var startDir in startDirs)
             {
-                FileInfo[] possibleContainers = GetPossibleContainers(startDir);
+                FileInfo[] dlls = FindAllDlls(startDir);
+                var loadedAssemblies = PreLoadAssembliesToPreventAssemblyNotFoundError(dlls);
 
-                foreach(var assemblyFile in possibleContainers)
-                {
-                    FindRecipesInAssembly(assemblyFile, recipeClasses);
-                }
+                foreach(var assembly in loadedAssemblies)
+                    FindRecipesInAssembly(assembly, recipeClasses);
+                
             }
 
             return recipeClasses.AsReadOnly();
         }
 
-        private static void FindRecipesInAssembly(FileInfo file, List<Recipe> recipeClasses)
+        private List<Assembly> PreLoadAssembliesToPreventAssemblyNotFoundError(FileInfo[] dllFile)
         {
-            var loaded = Assembly.LoadFrom(file.FullName);
+            var loaded = new List<Assembly>();
+            
+            foreach (var dll in dllFile)
+                //loading the core twice is BAD because "if(blah is RecipeAttribute)" etc will always fail
+                if(! dll.Name.StartsWith("Rakish.Core")) 
+                    loaded.Add(Assembly.LoadFrom(dll.FullName));
+
+            return loaded;
+        }
+
+        private static void FindRecipesInAssembly(Assembly loaded, List<Recipe> recipeClasses)
+        {   
             var types = loaded.GetTypes();
+            
             foreach(var type in types)
-            {
                 FindRecipeInType(type, recipeClasses);
-            }
+            
         }
 
-        private static void FindRecipeInType(Type type, List<Recipe> recipeClasses)
-        {
-            var atts = type.GetCustomAttributes(true);
 
-            foreach(var att in atts)
+        public static RecipeAttribute GetRecipeAttributeOrNull(Type type)
+        {
+            //get recipe attributes for type 
+            var atts = type.GetCustomAttributes(typeof(RecipeAttribute), true);
+
+            //should only be one per type
+            if (atts.Length > 1)
+                throw new Exception("Expected only 1 recipe attribute, but got more");
+
+            //return if none, we'll skip this class
+            if (atts.Length == 0)
+                return null;
+
+            var recipeAtt = atts[0] as RecipeAttribute;
+
+            //throw if bad case. Should cast fine (if not, then might indicate 2 of the same assembly is loaded)
+            if (recipeAtt == null)
+                throw new Exception("Casting error for RecipeAttribute. Same assembly loaded more than once?");
+
+            return recipeAtt;
+        }
+
+        //TODO: FindRecipeInType is Too long and 
+        //TODO: too many IL Instructions
+        //TODO: Nesting is too deep
+        //TODO: Not enough comments
+        //TODO: Too many variables
+        //
+        private static void FindRecipeInType(Type type, List<Recipe> manifest)
+        {
+            //find the attribute on the assembly if there is one
+            var recipeAtt = GetRecipeAttributeOrNull(type);
+            
+            //if not found, return
+            if (recipeAtt == null) return;
+            
+            //create recipe details from attribute
+            Recipe recipe = CreateRecipeFromAttribute(type, recipeAtt);
+
+            //add to manifest
+            manifest.Add(recipe);
+
+            //trawl through and add the tasks
+            AddTasksToRecipe(type, recipe);
+            
+        }
+
+        private static Recipe CreateRecipeFromAttribute(Type type, RecipeAttribute recipeAtt)
+        {
+            return new Recipe
+                       {
+                           Class = type, 
+                           Name = String.IsNullOrEmpty(recipeAtt.Name) ? type.Name.Replace("Recipe","").ToLower() : recipeAtt.Name
+                       };
+        }
+
+        private static void AddTasksToRecipe(Type type, Recipe recipe)
+        {
+            //loop through methods in class
+            foreach(var method in type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly ))
             {
-                var recipeAtt = att as RecipeAttribute;
+                //get the custom attributes on the method
+                var foundAttributes = method.GetCustomAttributes(typeof(TaskAttribute), false);
+                
+                if(foundAttributes.Length > 1)
+                    throw new Exception("Should only be one task attribute on a method");
 
-                if (recipeAtt == null)
+                //if none, skp to the next method
+                if (foundAttributes.Length == 0)
                     continue;
+                
+                var taskAttribute = foundAttributes[0] as TaskAttribute;
+                
+                if (taskAttribute == null)
+                    throw new Exception("couldn't cast TaskAttribute correctly, more that one assembly loaded?");
 
-                var recipe = new Recipe { Class = type, Name = String.IsNullOrEmpty(recipeAtt.Name) ? type.Name.Replace("Recipe","").ToLower() : recipeAtt.Name };
-                recipeClasses.Add(recipe);
+                //get the task based on attribute contents
+                Task t = CreateTaskFromAttribute(method, taskAttribute);
 
-                foreach(var method in type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly))
-                {
-                    var taskAttributes = method.GetCustomAttributes(true);
-                    foreach(var taskAttribute in taskAttributes)
-                    {
-                        var ta = taskAttribute as TaskAttribute;
-                        
-                        if (ta == null)
-                            continue;
+                //build list of dependent tasks
+                CreateDependentTasks(type, taskAttribute, t);
 
-                        Task t = new Task();
-                        
-                        if(! String.IsNullOrEmpty(ta.Name))
-                        {
-                            t.Name = ta.Name;
-                        }
-                        else
-                        {
-                            t.Name = method.Name.Replace("Task", "").ToLower();
-                        }
-                        
-                        t.Method = method;
-                        
-                        if(! String.IsNullOrEmpty(ta.Help))
-                        {
-                            t.Description = ta.Help;
-                        }
-                        else
-                        {
-                            t.Description = "No description";
-                        }
-
-                        foreach(string methodName in ta.After)
-                        {
-                            var dependee = type.GetMethod(methodName);
-                            if(dependee == null) throw new Exception(String.Format("No dependee method {0}",methodName));
-                            t.DependsOnMethods.Add(dependee);
-                        }
-
-                        recipe.Tasks.Add(t);
-                        
-                    }
-                }
+                //add the task to the recipe
+                recipe.Tasks.Add(t);
             }
         }
 
-        private FileInfo[] GetPossibleContainers(string startDir)
+        private static void CreateDependentTasks(Type type, TaskAttribute taskAttribute, Task t)
         {
-            return new DirectoryInfo(startDir)
+            foreach(string methodName in taskAttribute.After)
+            {
+                var dependee = type.GetMethod(methodName);
+                if(dependee == null) throw new Exception(String.Format("No dependee method {0}",methodName));
+                t.DependsOnMethods.Add(dependee);
+            }
+        }
+
+        private static Task CreateTaskFromAttribute(MethodInfo method, TaskAttribute ta)
+        {
+            Task t = new Task();
+                    
+            if(! String.IsNullOrEmpty(ta.Name))
+                t.Name = ta.Name;
+            else
+                t.Name = method.Name.Replace("Task", "").ToLower();
+                    
+                    
+            t.Method = method;
+                    
+            if(! String.IsNullOrEmpty(ta.Help))
+                t.Description = ta.Help;
+            else
+                t.Description = "No description";
+            return t;
+        }
+
+        private FileInfo[] FindAllDlls(string startDir)
+        {
+            
+            var found = new DirectoryInfo(startDir)
                 .GetFiles("*.dll", SearchOption.AllDirectories);
+
+            var deduped = new List<FileInfo>();
+            
+            foreach(var fileInfo in found)
+                if(! fileInfo.Directory.FullName.Contains("\\obj\\"))
+                    deduped.Add(fileInfo);
+            
+            return deduped.ToArray();
+
+
         }
     }
 }
