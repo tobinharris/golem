@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Golem.Core;
@@ -32,6 +33,7 @@ namespace Golem.Runner
             }
             else
             {
+                Console.WriteLine("Golem (Beta) - Your friendly executable .NET build tool.");
                 ShowList(found);
             }
             
@@ -48,6 +50,9 @@ namespace Golem.Runner
                     Console.WriteLine(start.PadRight(30) +"# " + task.Description);
                 }
             }
+
+            if (found.Count == 0)
+                Console.WriteLine("No recipes found under {0}", new DirectoryInfo(Environment.CurrentDirectory).Name);
         }
     }
 }
