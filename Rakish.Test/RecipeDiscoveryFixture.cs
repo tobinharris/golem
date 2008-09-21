@@ -27,7 +27,7 @@ namespace Rakish.Test
             {
                 Console.WriteLine(r.Name);
             }
-            Assert.AreEqual(3, found.Count);
+            Assert.AreEqual(4, found.Count);
         }
 
         [Test]
@@ -108,6 +108,13 @@ namespace Rakish.Test
             Assert.Fail();
         }
 
+        [Test]
+        public void Recipes_Inheriting_RecipeBase_Have_Contextual_Information()
+        {
+            var demo4 = found[3];
+            var runner = new TaskRunner(finder);
+            runner.Run(demo4,demo4.Tasks[0]);
+        }
         
     }
 }

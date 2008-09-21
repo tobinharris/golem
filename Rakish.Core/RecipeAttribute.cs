@@ -6,7 +6,7 @@ namespace Rakish.Core
     public class RecipeAttribute : Attribute
     {
         public string Name { get; set; }
-
+        public string Description { get; set; }
         
             
     }

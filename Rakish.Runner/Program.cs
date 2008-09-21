@@ -40,9 +40,11 @@ namespace Rakish.Runner
         {
             foreach(var recipe in found)
             {
+                //Console.WriteLine("\n{0}\n",!String.IsNullOrEmpty(recipe.Description) ? recipe.Description : recipe.Name);
                 foreach(var task in recipe.Tasks)
                 {
-                    Console.WriteLine("rakish " + recipe.Name + ":" + task.Name + " - " + task.Description);
+                    var start = "rakish " + recipe.Name + ":" + task.Name;
+                    Console.WriteLine(start.PadRight(30) +"# " + task.Description);
                 }
             }
         }

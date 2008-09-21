@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
 using System.Linq;
 
 namespace Rakish.Core
-{
-
- 
+{  
 
     /// <summary>
     /// 
@@ -24,8 +23,8 @@ namespace Rakish.Core
 
         public RecipeFinder()
         {
-            
         }
+
         public RecipeFinder(params string[] startDirs) : this()
         {
             this.startDirs = startDirs;
@@ -38,6 +37,10 @@ namespace Rakish.Core
 
             
         }
+
+        public ReadOnlyCollection<Assembly> AllAssembliesFound { get; private set; }
+        public ReadOnlyCollection<Recipe> AllRecipesFound { get; private set; }
+        
         //TODO: Too many variables
         public IList<Recipe> FindRecipesInFiles()
         {
@@ -53,6 +56,11 @@ namespace Rakish.Core
 
                 foreach(var assembly in loadedAssemblies)
                     FindRecipesInAssembly(assembly, recipeClasses);
+
+                AllAssembliesFound = loadedAssemblies.AsReadOnly();
+                AllRecipesFound = recipeClasses.AsReadOnly();
+
+
                 
             }
 
@@ -72,11 +80,24 @@ namespace Rakish.Core
         }
 
         private static void FindRecipesInAssembly(Assembly loaded, List<Recipe> recipeClasses)
-        {   
-            var types = loaded.GetTypes();
-            
-            foreach(var type in types)
-                FindRecipeInType(type, recipeClasses);
+        {
+            try
+            {
+                var types = loaded.GetTypes();
+
+                foreach (var type in types)
+                    FindRecipeInType(type, recipeClasses);
+            }
+            catch(ReflectionTypeLoadException ex)
+            {
+                foreach(var e in ex.LoaderExceptions)
+                {
+                    //Console.WriteLine(e.Message);
+                }
+                
+            }
+
+          
             
         }
 
@@ -132,8 +153,9 @@ namespace Rakish.Core
         {
             return new Recipe
                        {
-                           Class = type, 
-                           Name = String.IsNullOrEmpty(recipeAtt.Name) ? type.Name.Replace("Recipe","").ToLower() : recipeAtt.Name
+                           Class = type,
+                           Name = String.IsNullOrEmpty(recipeAtt.Name) ? (type.Name == "RecipesRecipe" ? "recipes" : type.Name.Replace("Recipe", "").ToLower()) : recipeAtt.Name,
+                           Description = ! String.IsNullOrEmpty(recipeAtt.Description) ? recipeAtt.Description : null
                        };
         }
 
@@ -190,10 +212,10 @@ namespace Rakish.Core
                     
             t.Method = method;
                     
-            if(! String.IsNullOrEmpty(ta.Help))
-                t.Description = ta.Help;
+            if(! String.IsNullOrEmpty(ta.Description))
+                t.Description = ta.Description;
             else
-                t.Description = "No description";
+                t.Description = "";
             return t;
         }
 

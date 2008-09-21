@@ -7,6 +7,7 @@ namespace Rakish.Core
     public class Recipe
     {
         public string Name { get; set; }
+        public string Description { get; set; }
         public List<Task> Tasks { get; private set; }
         public Type Class{ get; set;}
 

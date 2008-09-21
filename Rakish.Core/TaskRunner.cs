@@ -1,9 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Reflection;
 
 namespace Rakish.Core
 {
+    public class RecipeBase
+    {
+        public IList<Assembly> AllAssemblies = new List<Assembly>();
+        public IList<Recipe> AllRecipes = new List<Recipe>();
+    }
+
     public class TaskRunner
     {
         private RecipeFinder finder;
@@ -16,8 +23,20 @@ namespace Rakish.Core
         public void Run(Recipe recipe, Task task)
         {
             var recipeInstance = Activator.CreateInstance(recipe.Class);
-            
+            SetContextualInformationIfInheritsRecipeBase(recipeInstance);
             task.Method.Invoke(recipeInstance, null);
+        }
+
+        private void SetContextualInformationIfInheritsRecipeBase(object recipeInstance)
+        {
+            var tmpRecipe = recipeInstance as RecipeBase;
+            
+            if(tmpRecipe == null)
+                return;
+
+            tmpRecipe.AllAssemblies = finder.AllAssembliesFound;
+            tmpRecipe.AllRecipes = finder.AllRecipesFound;
+            
         }
 
         //TODO: Run is Too long
