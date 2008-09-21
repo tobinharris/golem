@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
     <Compile Include="Locations.cs" />
     <Compile Include="Recipe.cs" />
     <Compile Include="Task.cs" />

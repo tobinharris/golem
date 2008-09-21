@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Golem.Core;
@@ -117,5 +118,50 @@ namespace Golem.Test
             runner.Run(demo4,demo4.Tasks[0]);
         }
         
+    }
+
+    [TestFixture]
+    public class FinderConfigurationFixture
+    {
+        [SetUp]
+        public void Before_Each_Test()
+        {
+            if(File.Exists(Configuration.DefaultFileName))
+                File.Delete(Configuration.DefaultFileName);
+        }
+
+     
+
+        [Test]
+        public void Finder_Caches_Assemblies_Containing_Recipes()
+        {
+            var finder = new RecipeFinder();
+            finder.FindRecipesInFiles();
+            Assert.AreEqual(1, finder.AssembliesContainingRecipes.Count);
+        }
+
+        [Test]
+        public void Can_Automatically_Generate_First_Config_File()
+        {
+            Assert.IsFalse(File.Exists("\\" + Configuration.DefaultFileName));
+            var config = new Configuration();
+            Assert.IsTrue(config.IsNew);
+            Assert.IsFalse(File.Exists("\\" + Configuration.DefaultFileName));
+
+            var finder = new RecipeFinder();
+            finder.FindRecipesInFiles();
+
+            if(config.IsNew)
+                config.RecipeSearchHints.AddRange(finder.FilesContainingRecipes.Select(s=>s.FullName));
+
+            config.Save();
+
+            var config2 = new Configuration();
+            Assert.IsFalse(config2.IsNew);
+            Assert.AreEqual(1, config2.RecipeSearchHints.Count);
+
+            
+        }
+
     }
 }

@@ -7,8 +7,7 @@ using System.Linq;
 using Golem.Core;
 
 namespace Golem.Core
-{  
-
+{
     /// <summary>
     /// 
     /// </summary>
@@ -24,8 +23,11 @@ namespace Golem.Core
 
         public RecipeFinder()
         {
+            this.startDirs = new string[]{Environment.CurrentDirectory};
         }
+        
 
+        
         public RecipeFinder(params string[] startDirs) : this()
         {
             this.startDirs = startDirs;
@@ -41,6 +43,9 @@ namespace Golem.Core
 
         public ReadOnlyCollection<Assembly> AllAssembliesFound { get; private set; }
         public ReadOnlyCollection<Recipe> AllRecipesFound { get; private set; }
+
+        public List<Assembly> AssembliesContainingRecipes { get; private set; }
+        public List<FileInfo> FilesContainingRecipes = new List<FileInfo>();
         
         //TODO: Too many variables
         public IList<Recipe> FindRecipesInFiles()
@@ -60,27 +65,29 @@ namespace Golem.Core
 
                 AllAssembliesFound = loadedAssemblies.AsReadOnly();
                 AllRecipesFound = recipeClasses.AsReadOnly();
-
-
-                
             }
 
             return recipeClasses.AsReadOnly();
         }
 
+        
+        
         private List<Assembly> PreLoadAssembliesToPreventAssemblyNotFoundError(FileInfo[] dllFile)
         {
             var loaded = new List<Assembly>();
             
             foreach (var dll in dllFile)
                 //loading the core twice is BAD because "if(blah is RecipeAttribute)" etc will always fail
-                if(! dll.Name.StartsWith("Golem.Core")) 
+                if(! dll.Name.StartsWith("Golem.Core") && ! FilesContainingRecipes.Any(file=>file.FullName == dll.FullName))
+                {
                     loaded.Add(Assembly.LoadFrom(dll.FullName));
+                    FilesContainingRecipes.Add(dll);
+                }
 
             return loaded;
         }
 
-        private static void FindRecipesInAssembly(Assembly loaded, List<Recipe> recipeClasses)
+        private void FindRecipesInAssembly(Assembly loaded, List<Recipe> recipeClasses)
         {
             try
             {
@@ -103,7 +110,7 @@ namespace Golem.Core
         }
 
 
-        public static RecipeAttribute GetRecipeAttributeOrNull(Type type)
+        public RecipeAttribute GetRecipeAttributeOrNull(Type type)
         {
             //get recipe attributes for type 
             var atts = type.GetCustomAttributes(typeof(RecipeAttribute), true);
@@ -115,6 +122,12 @@ namespace Golem.Core
             //return if none, we'll skip this class
             if (atts.Length == 0)
                 return null;
+
+            if(AssembliesContainingRecipes == null)
+                AssembliesContainingRecipes = new List<Assembly>();
+
+            if (! AssembliesContainingRecipes.Contains(type.Assembly))
+                AssembliesContainingRecipes.Add(type.Assembly);
 
             var recipeAtt = atts[0] as RecipeAttribute;
 
@@ -131,7 +144,7 @@ namespace Golem.Core
         //TODO: Not enough comments
         //TODO: Too many variables
         //
-        private static void FindRecipeInType(Type type, List<Recipe> manifest)
+        private void FindRecipeInType(Type type, List<Recipe> manifest)
         {
             //find the attribute on the assembly if there is one
             var recipeAtt = GetRecipeAttributeOrNull(type);

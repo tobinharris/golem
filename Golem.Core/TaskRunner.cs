@@ -43,9 +43,10 @@ namespace Golem.Core
         //TODO: Nesting depth is too deep
         public void Run(string recipeName, string taskName)
         {
-            var found = finder.FindRecipesInFiles();
-            
-            foreach(var r in found)
+            if(finder.AllRecipesFound.Count==0)
+                finder.FindRecipesInFiles();
+
+            foreach (var r in finder.AllRecipesFound)
             {
                 if(r.Name.ToLower() == recipeName.ToLower())
                 {
