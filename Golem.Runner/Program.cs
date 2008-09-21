@@ -12,7 +12,7 @@ namespace Golem.Runner
     {
         public static void Main(string[] args)
         {
-            var finder = new RecipeFinder(Environment.CurrentDirectory);
+            var finder = new RecipeSearch(Environment.CurrentDirectory);
             var found = finder.FindRecipesInFiles();
 
             if(args.Length > 0)

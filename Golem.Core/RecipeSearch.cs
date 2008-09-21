@@ -8,80 +8,70 @@ using Golem.Core;
 
 namespace Golem.Core
 {
+    
     /// <summary>
     /// 
     /// </summary>
     public class RecipeSearch
     {
-        
         //scanning directories 
         //loading assemblies
         //building tree of recipes
         //reflecting on types
 
-        private string[] startDirs;
-
+        private readonly AssemblySearch assemblySearch;
+        
         public RecipeSearch()
         {
-            this.startDirs = new string[]{Environment.CurrentDirectory};
+            assemblySearch = new AssemblySearch();
         }
         
-
-        
-        public RecipeSearch(params string[] startDirs) : this()
+        public RecipeSearch(params string[] searchLocations)
         {
-            this.startDirs = startDirs;
-
-            if(startDirs == null)
-            {
-                Locations.StartDirs = new string[] { Environment.CurrentDirectory };
-                this.startDirs = Locations.StartDirs;
-            }
-
-            
+            assemblySearch = new AssemblySearch(searchLocations);
         }
 
-        public ReadOnlyCollection<Assembly> AllAssembliesFound { get; private set; }
-        public ReadOnlyCollection<Recipe> AllRecipesFound { get; private set; }
+        public ReadOnlyCollection<Assembly> AssembliesExamined { get; private set; }
+        public ReadOnlyCollection<Recipe> Recipes { get; private set; }
 
-        public List<Assembly> AssembliesContainingRecipes { get; private set; }
+        public List<Assembly> RecipeAssemblies { get; private set; }
         public List<FileInfo> FilesContainingRecipes = new List<FileInfo>();
         
-        //TODO: Too many variables
+        
         public IList<Recipe> FindRecipesInFiles()
         {
             var recipeClasses = new List<Recipe>();
+            assemblySearch.Scan();
+            var loadedAssemblies = 
+                PreLoadAssembliesToPreventAssemblyNotFoundError(
+                    assemblySearch.FoundAssemblyFiles.ToArray()
+                    );
+
+            foreach(var assembly in loadedAssemblies)
+                FindRecipesInAssembly(assembly, recipeClasses);
+
+            AssembliesExamined = loadedAssemblies.AsReadOnly();
+            Recipes = recipeClasses.AsReadOnly();
             
-            //TODO: Fix this
-            Locations.StartDirs = startDirs;
-
-            foreach (var startDir in startDirs)
-            {
-                FileInfo[] dlls = FindAllDlls(startDir);
-                var loadedAssemblies = PreLoadAssembliesToPreventAssemblyNotFoundError(dlls);
-
-                foreach(var assembly in loadedAssemblies)
-                    FindRecipesInAssembly(assembly, recipeClasses);
-
-                AllAssembliesFound = loadedAssemblies.AsReadOnly();
-                AllRecipesFound = recipeClasses.AsReadOnly();
-            }
 
             return recipeClasses.AsReadOnly();
         }
 
         
         
-        private List<Assembly> PreLoadAssembliesToPreventAssemblyNotFoundError(FileInfo[] dllFile)
+        private List<Assembly> PreLoadAssembliesToPreventAssemblyNotFoundError(FileInfo[] dllFiles)
         {
             var loaded = new List<Assembly>();
             
-            foreach (var dll in dllFile)
+            foreach (var dllFile in dllFiles)
                 //loading the core twice is BAD because "if(blah is RecipeAttribute)" etc will always fail
-                if(! dll.Name.StartsWith("Golem.Core") && ! FilesContainingRecipes.Any(file=>file.FullName == dll.FullName))
+                if( ! dllFile.Name.StartsWith("Golem.Core") 
+                    && ! FilesContainingRecipes.Any(file=>file.FullName == dllFile.FullName)
+                    && ! loaded.Any(a=>a.CodeBase == dllFile.FullName)
+                    )
                 {
-                    loaded.Add(Assembly.LoadFrom(dll.FullName));
-                    FilesContainingRecipes.Add(dll);
+                    loaded.Add(Assembly.LoadFrom(dllFile.FullName));
+                    FilesContainingRecipes.Add(dllFile);
                 }
 
             return loaded;
@@ -123,11 +113,11 @@ namespace Golem.Core
             if (atts.Length == 0)
                 return null;
 
-            if(AssembliesContainingRecipes == null)
-                AssembliesContainingRecipes = new List<Assembly>();
+            if(RecipeAssemblies == null)
+                RecipeAssemblies = new List<Assembly>();
 
-            if (! AssembliesContainingRecipes.Contains(type.Assembly))
-                AssembliesContainingRecipes.Add(type.Assembly);
+            if (! RecipeAssemblies.Contains(type.Assembly))
+                RecipeAssemblies.Add(type.Assembly);
 
             var recipeAtt = atts[0] as RecipeAttribute;
 
@@ -233,21 +223,6 @@ namespace Golem.Core
             return t;
         }
 
-        private FileInfo[] FindAllDlls(string startDir)
-        {
-            
-            var found = new DirectoryInfo(startDir)
-                .GetFiles("*.dll", SearchOption.AllDirectories);
-
-            var deduped = new List<FileInfo>();
-            
-            foreach(var fileInfo in found)
-                if(! fileInfo.Directory.FullName.Contains("\\obj\\"))
-                    deduped.Add(fileInfo);
-            
-            return deduped.ToArray();
-
-
-        }
+       
     }
 }

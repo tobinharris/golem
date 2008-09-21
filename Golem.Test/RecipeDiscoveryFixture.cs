@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Golem.Core;
 using NUnit.Framework;
@@ -12,14 +13,14 @@ namespace Golem.Test
     [TestFixture]
     public class RecipeDiscoveryFixture
     {
-        private RecipeFinder finder;
+        private RecipeSearch search;
         IList<Recipe> found;
 
         [SetUp]
         public void Before_Each_Test_Is_Run()
         {
-            finder = new RecipeFinder(Environment.CurrentDirectory + "..\\..\\..\\..\\");
-            found = finder.FindRecipesInFiles();   
+            search = new RecipeSearch(Environment.CurrentDirectory + "..\\..\\..\\..\\");
+            found = search.FindRecipesInFiles();   
         }
 
         [Test]
@@ -53,7 +54,7 @@ namespace Golem.Test
         public void Can_Run_Task()
         {
             var recipeInfo = found[1];
-            var runner = new TaskRunner(finder);
+            var runner = new TaskRunner(search);
             runner.Run(recipeInfo, recipeInfo.Tasks[0]);
             Assert.AreEqual("TEST", AppDomain.CurrentDomain.GetData("TEST"));
         }
@@ -61,10 +62,11 @@ namespace Golem.Test
         [Test]
         public void Can_Run_Task_By_Name()
         {
-            var runner = new TaskRunner(finder);
+            
+            var runner = new TaskRunner(search);
+            Locations.StartDirs = new[] {Environment.CurrentDirectory + "..\\..\\..\\..\\"};
             runner.Run("demo","list");
             Assert.AreEqual("LIST", AppDomain.CurrentDomain.GetData("TEST"));
-            runner.Run("demo", "stats");
         }
 
         
@@ -86,7 +88,7 @@ namespace Golem.Test
         [Test]
         public void Functions_Are_Called_In_Correct_Order_With_Dependencies()
         {
-            var runner = new TaskRunner(finder);
+            var runner = new TaskRunner(search);
             runner.Run("demo2", "one");          
 
         }
@@ -94,7 +96,7 @@ namespace Golem.Test
         [Test]
         public void Can_Infer_Recipe_Category_And_Task_Name()
         {
-            var runner = new TaskRunner(finder);
+            var runner = new TaskRunner(search);
             runner.Run("demo3", "hello");          
         }
 
@@ -114,7 +116,7 @@ namespace Golem.Test
         public void Recipes_Inheriting_RecipeBase_Have_Contextual_Information()
         {
             var demo4 = found[3];
-            var runner = new TaskRunner(finder);
+            var runner = new TaskRunner(search);
             runner.Run(demo4,demo4.Tasks[0]);
         }
         
@@ -135,12 +137,12 @@ namespace Golem.Test
         [Test]
         public void Finder_Caches_Assemblies_Containing_Recipes()
         {
-            var finder = new RecipeFinder();
+            var finder = new RecipeSearch();
             finder.FindRecipesInFiles();
-            Assert.AreEqual(1, finder.AssembliesContainingRecipes.Count);
+            Assert.AreEqual(1, finder.RecipeAssemblies.Count);
         }
 
-        [Test]
+        [Test,Ignore]
         public void Can_Automatically_Generate_First_Config_File()
         {
             Assert.IsFalse(File.Exists("\\" + Configuration.DefaultFileName));
@@ -148,7 +150,7 @@ namespace Golem.Test
             Assert.IsTrue(config.IsNew);
             Assert.IsFalse(File.Exists("\\" + Configuration.DefaultFileName));
 
-            var finder = new RecipeFinder();
+            var finder = new RecipeSearch();
             finder.FindRecipesInFiles();
 
             if(config.IsNew)
