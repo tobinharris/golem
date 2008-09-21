@@ -8,11 +8,11 @@
     <ProjectGuid>{AE3B1280-28A3-4E92-8970-DE3168A18676}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rakish.Runner</RootNamespace>
-    <AssemblyName>Rakish.Runner</AssemblyName>
+    <RootNamespace>Golem.Runner</RootNamespace>
+    <AssemblyName>Golem.Runner</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <StartupObject>Rakish.Runner.Program</StartupObject>
+    <StartupObject>Golem.Runner.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,9 +50,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rakish.Core\Rakish.Core.csproj">
+    <ProjectReference Include="..\Rakish.Core\Golem.Core.csproj">
       <Project>{267A8DF5-2B11-470E-8878-BE6E7244B713}</Project>
-      <Name>Rakish.Core</Name>
+      <Name>Golem.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -64,7 +64,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetPath)" "C:\Program Files\Rakish\rakish.exe"
-copy "$(TargetDir)"*.dll "C:\Program Files\Rakish"</PostBuildEvent>
+    <PostBuildEvent>mkdir "C:\Program Files\Golem\"
+copy "$(TargetPath)" "C:\Program Files\Golem\golem.exe"
+copy "$(TargetDir)"*.dll "C:\Program Files\Golem"</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Rakish.Core;
+using Golem.Core;
+using Golem.Core;
 
-namespace Rakish.Runner
+namespace Golem.Runner
 {
     public class Program
     {
@@ -27,7 +28,7 @@ namespace Rakish.Runner
                 if(parts.Length == 2)
                     runner.Run(parts[0],parts[1]);
                 else
-                    Console.WriteLine("Error: don't know what to do with that. \n\nTry: rakish -t\n\n...to see commands.");
+                    Console.WriteLine("Error: don't know what to do with that. \n\nTry: golem -t\n\n...to see commands.");
             }
             else
             {
@@ -43,7 +44,7 @@ namespace Rakish.Runner
                 //Console.WriteLine("\n{0}\n",!String.IsNullOrEmpty(recipe.Description) ? recipe.Description : recipe.Name);
                 foreach(var task in recipe.Tasks)
                 {
-                    var start = "rakish " + recipe.Name + ":" + task.Name;
+                    var start = "golem " + recipe.Name + ":" + task.Name;
                     Console.WriteLine(start.PadRight(30) +"# " + task.Description);
                 }
             }

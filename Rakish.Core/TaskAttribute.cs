@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Rakish.Core
+namespace Golem.Core
 {
     public class TaskAttribute : Attribute
     {

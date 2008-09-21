@@ -4,8 +4,9 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
 using System.Linq;
+using Golem.Core;
 
-namespace Rakish.Core
+namespace Golem.Core
 {  
 
     /// <summary>
@@ -73,7 +74,7 @@ namespace Rakish.Core
             
             foreach (var dll in dllFile)
                 //loading the core twice is BAD because "if(blah is RecipeAttribute)" etc will always fail
-                if(! dll.Name.StartsWith("Rakish.Core")) 
+                if(! dll.Name.StartsWith("Golem.Core")) 
                     loaded.Add(Assembly.LoadFrom(dll.FullName));
 
             return loaded;

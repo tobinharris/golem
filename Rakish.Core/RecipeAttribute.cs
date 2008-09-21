@@ -1,6 +1,6 @@
 using System;
 
-namespace Rakish.Core
+namespace Golem.Core
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class RecipeAttribute : Attribute

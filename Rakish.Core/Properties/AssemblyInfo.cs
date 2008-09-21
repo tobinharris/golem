@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Rakish.Core")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Golem.Core")]
+[assembly: AssemblyDescription("Executable Rake-like builds for .NET")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Rakish.Core")]
-[assembly: AssemblyCopyright("Copyright ©  2008")]
+[assembly: AssemblyProduct("Golem")]
+[assembly: AssemblyCopyright("Copyright Tobin Harris © 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

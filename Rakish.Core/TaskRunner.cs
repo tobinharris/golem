@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Reflection;
 
-namespace Rakish.Core
+namespace Golem.Core
 {
     public class RecipeBase
     {

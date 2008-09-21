@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using Rakish.Core;
+using Golem.Core;
+using Golem.Core;
 
-namespace Rakish.Test
+namespace Golem.Test
 {
     [Recipe(Name="demo2")]
     public class Demo2Recipe 

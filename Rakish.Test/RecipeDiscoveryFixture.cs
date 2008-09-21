@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Golem.Core;
 using NUnit.Framework;
-using Rakish.Core;
+using Golem.Core;
 
-namespace Rakish.Test
+namespace Golem.Test
 {
     [TestFixture]
     public class RecipeDiscoveryFixture
