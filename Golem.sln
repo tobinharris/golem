@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Golem.Core", "Rakish.Core\Golem.Core.csproj", "{267A8DF5-2B11-470E-8878-BE6E7244B713}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Golem.Core", "Golem.Core\Golem.Core.csproj", "{267A8DF5-2B11-470E-8878-BE6E7244B713}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Golem.Test", "Rakish.Test\Golem.Test.csproj", "{30A6D3AC-8EB8-428F-9C1E-5131643F7EBF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Golem.Test", "Golem.Test\Golem.Test.csproj", "{30A6D3AC-8EB8-428F-9C1E-5131643F7EBF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External Libs", "External Libs", "{74E13096-F694-40BE-9F9A-D4EFD2A9E4AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Golem.Runner", "Rakish.Runner\Golem.Runner.csproj", "{AE3B1280-28A3-4E92-8970-DE3168A18676}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Golem.Runner", "Golem.Runner\Golem.Runner.csproj", "{AE3B1280-28A3-4E92-8970-DE3168A18676}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{41F9F9EF-3D0E-4A05-A033-7DD77D040A1F}"
 	ProjectSection(SolutionItems) = preProject

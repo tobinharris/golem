@@ -54,7 +54,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rakish.Core\Golem.Core.csproj">
+    <ProjectReference Include="..\Golem.Core\Golem.Core.csproj">
       <Project>{267A8DF5-2B11-470E-8878-BE6E7244B713}</Project>
       <Name>Golem.Core</Name>
     </ProjectReference>
