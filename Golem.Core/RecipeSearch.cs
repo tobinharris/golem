@@ -11,7 +11,7 @@ namespace Golem.Core
     /// <summary>
     /// 
     /// </summary>
-    public class RecipeFinder
+    public class RecipeSearch
     {
         
         //scanning directories 
@@ -21,14 +21,14 @@ namespace Golem.Core
 
         private string[] startDirs;
 
-        public RecipeFinder()
+        public RecipeSearch()
         {
             this.startDirs = new string[]{Environment.CurrentDirectory};
         }
         
 
         
-        public RecipeFinder(params string[] startDirs) : this()
+        public RecipeSearch(params string[] startDirs) : this()
         {
             this.startDirs = startDirs;
 
