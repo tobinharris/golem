@@ -142,7 +142,7 @@ namespace Golem.Test
             Assert.AreEqual(1, finder.RecipeAssemblies.Count);
         }
 
-        [Test,Ignore]
+        [Test]
         public void Can_Automatically_Generate_First_Config_File()
         {
             Assert.IsFalse(File.Exists("\\" + Configuration.DefaultFileName));
@@ -154,7 +154,7 @@ namespace Golem.Test
             finder.FindRecipesInFiles();
 
             if(config.IsNew)
-                config.RecipeSearchHints.AddRange(finder.FilesContainingRecipes.Select(s=>s.FullName));
+                config.RecipeSearchHints.AddRange((from la in finder.LoadedAssemblies where la.FoundRecipes.Count > 0 select la.LoadedFrom.FullName));
 
             config.Save();
 
