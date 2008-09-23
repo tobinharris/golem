@@ -1,25 +1,29 @@
-======================================================================
 Golem .NET Build Tool
-By Tobin Harris (http://www.tobinharris.com)
 ======================================================================
 
-= About =
+By Tobin Harris [http://www.tobinharris.com](http://www.tobinharris.com)
+
+About Golem
+-----------
 
 Golem is a simple build tool for Microsoft .NET 3.5. 
-It lets you specify build tasks in regular c# code, and then run them from the command line (see the list at the bottom of the file). 
-Inspired by Ruby Rake.
+It lets you specify build tasks in regular c# code.
+You can run those in various ways: from the command line, a GUI runner, or from within visual studio. 
 
 Advantages include:
 
 	* Create custom tasks and recipes in good old c# or VB.NET code. 
 	* Flexible. Create tasks for any purpose (testing, build, deployment, nhibernate, db, documentation, code metrics, reporting etc) 
 	* No learning new build languages or tools	
-	* Can be run from the command line
 	* Quick and easy to write
+	* Tasks are easy to run. Invoke from the command line or GUI runner.	
 	* Share recipes between projects
-	* Share recipes with the community	
+	* Share recipes with the community		
 
-= Build Recipes = 
+Golem is currently under development by Tobin Harris, and was inspired by Ruby Rake.
+
+Build Recipes & Tasks
+---------------------
 
 If you've used a unit testing framework, then Golem code will be familiar. 
 
@@ -82,7 +86,8 @@ You could now type:
 
 ... to quickly drop, creat and populate your development database. Cool huh?
 
-= The Sky is the Limit =
+The Sky is the Limit
+--------------------
 
 Writing your own build tasks is cool, but you find it better to reuse ones already published in the community.
 Watch out for some cool build tasks in the making...
