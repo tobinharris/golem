@@ -114,6 +114,16 @@ Watch out for some cool build tasks in the making...
 	golem system:update           # Update to latest version of Rakish. Pass VERSION for specific version.
 	golem iis:restart             # Restart local IIS (Use IP=X.X.X.X for remote
 	golem iis:backupconfigs       # Backup IIS configuration files (into project folder here)
+
+Ready for Shaping
+-----------------
+Golem is still in BETA. I'm getting some value from it in my personal projects right now, and you can too. 
+BUT, it's probably not not quite ready for use on commercial projects yet. The code base is still unstable.
+
+Coders Needed
+-------------
+If you're interested in helping with Golem, then let me know. 
+Also, feel free to send your ideas, thoughts or findings to [tobin@tobinharris.com](tobin@tobinharris.com). 
 		
 
 
