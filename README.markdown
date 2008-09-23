@@ -82,7 +82,7 @@ Build your solution, and then type this at the command line:
 
 You could now type:
 
-	> golem db:reet
+	> golem db:reset
 
 ... to quickly drop, creat and populate your development database. Cool huh?
 
