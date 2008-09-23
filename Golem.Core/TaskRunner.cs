@@ -13,11 +13,11 @@ namespace Golem.Core
 
     public class TaskRunner
     {
-        private RecipeSearch search;
+        private RecipeCataloger cataloger;
         
-        public TaskRunner(RecipeSearch aSearch)
+        public TaskRunner(RecipeCataloger aCataloger)
         {
-            search = aSearch;
+            cataloger = aCataloger;
         }
 
         public void Run(Recipe recipe, Task task)
@@ -34,8 +34,8 @@ namespace Golem.Core
             if(tmpRecipe == null)
                 return;
 
-            tmpRecipe.AllAssemblies = search.AssembliesExamined;
-            tmpRecipe.AllRecipes = search.Recipes;
+            tmpRecipe.AllAssemblies = cataloger.AssembliesExamined;
+            tmpRecipe.AllRecipes = cataloger.Recipes;
             
         }
 
@@ -43,10 +43,10 @@ namespace Golem.Core
         //TODO: Nesting depth is too deep
         public void Run(string recipeName, string taskName)
         {
-            if(search.Recipes.Count==0)
-                search.FindRecipesInFiles();
+            if(cataloger.Recipes.Count==0)
+                cataloger.CatalogueRecipes();
 
-            foreach (var r in search.Recipes)
+            foreach (var r in cataloger.Recipes)
             {
                 if(r.Name.ToLower() == recipeName.ToLower())
                 {
@@ -69,8 +69,8 @@ namespace Golem.Core
 //        public RunManifest BuildRunManifest(string recipeName, string taskName)
 //        {
 //            var manifest = new RunManifest();
-//            var search = new RecipeSearch();
-//            var found = search.FindRecipesInFiles();
+//            var cataloger = new RecipeCataloger();
+//            var found = cataloger.CatalogueRecipes();
 //
 //            foreach (var r in found)
 //            {

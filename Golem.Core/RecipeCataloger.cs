@@ -8,63 +8,85 @@ using Golem.Core;
 
 namespace Golem.Core
 {
-    public class LoadedAssembly
+
+    public class RecipeCatalogue
     {
-        public Assembly Assembly { get; set; }
-        public FileInfo LoadedFrom { get; set; }
-        public List<Recipe> FoundRecipes{get; set;}
-        
-        public LoadedAssembly()
+        public RecipeCatalogue(List<LoadedAssemblyInfo> found)
         {
-            FoundRecipes = new List<Recipe>();
+            
         }
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public class RecipeSearch
+    public class RecipeCataloger
     {
-        //scanning directories 
-        //loading assemblies
+        //loads assemblies
         //building tree of recipes
         //reflecting on types
 
-        private readonly AssemblySearch assemblySearch;
+        private readonly string[] _searchPaths;
+        private readonly List<LoadedAssemblyInfo> _loadedAssemblies;
         
-        public RecipeSearch()
+        public RecipeCataloger(params string[] searchPaths)
         {
-            assemblySearch = new AssemblySearch();
+            _searchPaths = searchPaths;
+            _loadedAssemblies = new List<LoadedAssemblyInfo>();
         }
         
-        public RecipeSearch(params string[] searchLocations)
+        public ReadOnlyCollection<LoadedAssemblyInfo> LoadedAssemblies { get { return _loadedAssemblies.AsReadOnly(); } }
+        
+
+        /// <summary>
+        /// Queries loaded assembly info to list all assemblies examined
+        /// </summary>
+        public ReadOnlyCollection<Assembly> AssembliesExamined
         {
-            assemblySearch = new AssemblySearch(searchLocations);
+            get
+            {
+                return (from la in _loadedAssemblies select la.Assembly).ToList().AsReadOnly();
+            }
         }
 
-        public ReadOnlyCollection<Assembly> AssembliesExamined { get; private set; }
-        public List<Recipe> Recipes { get; private set; }
+        /// <summary>
+        /// Queries loaded assembly info to list the associated recipes with each
+        /// </summary>
+        public ReadOnlyCollection<Recipe> Recipes
+        { 
+            get
+            {
+                return (from la in _loadedAssemblies from r in la.FoundRecipes select r).ToList().AsReadOnly();
+            }
+        }
+ 
+        /// <summary>
+        /// Lists assemblies that contained recipes
+        /// </summary>
+        public List<LoadedAssemblyInfo> LoadedAssembliesContainingRecipes
+        { 
+            get
+            {
+                return (from la in _loadedAssemblies where la.FoundRecipes.Count > 0 select la).ToList();
+            }
+        }
 
-        public List<Assembly> RecipeAssemblies { get; private set; }
-        public List<FileInfo> FilesContainingRecipes = new List<FileInfo>();
-
-        public List<LoadedAssembly> LoadedAssemblies = new List<LoadedAssembly>();
         
-        public IList<Recipe> FindRecipesInFiles()
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IList<Recipe> CatalogueRecipes()
         {
-            
-            assemblySearch.Scan();
+            var fileSearch = new FileSearch(_searchPaths);
+            fileSearch.BuildFileList();
+
             PreLoadAssembliesToPreventAssemblyNotFoundError(
-                assemblySearch.FoundAssemblyFiles.ToArray()
+                fileSearch.FoundAssemblyFiles.ToArray()
                 );
-
             
-            ExtractAndFlag();
-
-            AssembliesExamined = (from la in LoadedAssemblies select la.Assembly).ToList().AsReadOnly();
-            
-            Recipes = (from la in LoadedAssemblies from r in la.FoundRecipes select r).ToList();
-
+            ExtractRecipesFromPreLoadedAssemblies();
             return Recipes.ToArray();
         }
 
@@ -74,20 +96,20 @@ namespace Golem.Core
         {   
             foreach (var file in assemblyFiles)
                 //loading the core twice is BAD because "if(blah is RecipeAttribute)" etc will always fail
-                if( ! file.Name.StartsWith("Golem.Core") && ! LoadedAssemblies.Any(la=>la.LoadedFrom.FullName == file.FullName))
+                if( ! file.Name.StartsWith("Golem.Core") && ! LoadedAssemblies.Any(la=>la.File.FullName == file.FullName))
                 {
-                    LoadedAssemblies.Add(
-                        new LoadedAssembly
+                    _loadedAssemblies.Add(
+                        new LoadedAssemblyInfo
                             {
                                 Assembly = Assembly.LoadFrom(file.FullName),
-                                LoadedFrom = file
+                                File = file
                             }); 
                 }
 
             
         }
 
-        private void ExtractAndFlag()
+        private void ExtractRecipesFromPreLoadedAssemblies()
         {
             foreach(var la in LoadedAssemblies)
                 foreach (var type in la.Assembly.GetTypes())
@@ -109,11 +131,7 @@ namespace Golem.Core
             if (atts.Length == 0)
                 return null;
 
-            if(RecipeAssemblies == null)
-                RecipeAssemblies = new List<Assembly>();
-
-            if (! RecipeAssemblies.Contains(type.Assembly))
-                RecipeAssemblies.Add(type.Assembly);
+            
 
             var recipeAtt = atts[0] as RecipeAttribute;
 
@@ -124,13 +142,8 @@ namespace Golem.Core
             return recipeAtt;
         }
 
-        //TODO: ExtractRecipesFromType is Too long and 
-        //TODO: too many IL Instructions
-        //TODO: Nesting is too deep
-        //TODO: Not enough comments
-        //TODO: Too many variables
-        //
-        private void ExtractRecipesFromType(Type type, LoadedAssembly la)
+        
+        private void ExtractRecipesFromType(Type type, LoadedAssemblyInfo la)
         {
             //find the attribute on the assembly if there is one
             var recipeAtt = GetRecipeAttributeOrNull(type);
@@ -190,13 +203,13 @@ namespace Golem.Core
             }
         }
 
-        private static void CreateDependentTasks(Type type, TaskAttribute taskAttribute, Task t)
+        private static void CreateDependentTasks(Type type, TaskAttribute taskAttribute, Task task)
         {
             foreach(string methodName in taskAttribute.After)
             {
                 var dependee = type.GetMethod(methodName);
                 if(dependee == null) throw new Exception(String.Format("No dependee method {0}",methodName));
-                t.DependsOnMethods.Add(dependee);
+                task.DependsOnMethods.Add(dependee);
             }
         }
 

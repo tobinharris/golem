@@ -7,14 +7,22 @@ namespace Golem.Core
 {
     public class Configuration
     {
-        public static readonly string DefaultFileName = "golem.xml";
+        public static bool ConfigFileExists
+        {
+            get
+            {
+                return File.Exists(Environment.CurrentDirectory + "\\" + DEFAULT_FILE_NAME);   
+            }
+        }
+        public static readonly string DEFAULT_FILE_NAME = "golem.xml";
+
         private FileInfo _file;
         private ConfigurationMemento _memento;
-
+        
         public Configuration()
         {
             _memento = new ConfigurationMemento();
-            _file = new FileInfo(Environment.CurrentDirectory + "\\" + DefaultFileName);
+            _file = new FileInfo(Environment.CurrentDirectory + "\\" + DEFAULT_FILE_NAME);
 
             if (_file.Exists)
                 LoadFrom(_file);

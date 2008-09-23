@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DemoRecipe.cs" />
+    <Compile Include="FinderConfigurationFixture.cs" />
     <Compile Include="RecipeDiscoveryFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

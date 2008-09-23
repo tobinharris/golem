@@ -4,24 +4,22 @@ using System.IO;
 
 namespace Golem.Core
 {
-    public class AssemblySearch
+    public class FileSearch
     {
         private string[] startDirs;
         public List<FileInfo> FoundAssemblyFiles = new List<FileInfo>();
         
-        public AssemblySearch()
+        public FileSearch()
         {
             startDirs = new[] { Environment.CurrentDirectory };    
         }
 
-        public AssemblySearch(params string[] startDirs)
+        public FileSearch(params string[] startDirs)
         {
             this.startDirs = startDirs;
-            if (startDirs == null)
-                startDirs = new[]{Environment.CurrentDirectory};
         }
 
-        public void Scan()
+        public void BuildFileList()
         {
             FoundAssemblyFiles.Clear();
             
@@ -34,6 +32,12 @@ namespace Golem.Core
 
         private FileInfo[] FindFilesExcludingDuplicates(string startDir)
         {
+            //if a file, then return
+            var tmp = new FileInfo(startDir);
+            if( tmp.Exists )
+            {
+                return new[]{tmp};
+            }
 
             var found = new DirectoryInfo(startDir)
                 .GetFiles("*.dll", SearchOption.AllDirectories);

@@ -12,8 +12,8 @@ namespace Golem.Runner
     {
         public static void Main(string[] args)
         {
-            var finder = new RecipeSearch(Environment.CurrentDirectory);
-            var found = finder.FindRecipesInFiles();
+            var finder = new RecipeCataloger(Environment.CurrentDirectory);
+            var found = finder.CatalogueRecipes();
 
             if(args.Length > 0)
             {
