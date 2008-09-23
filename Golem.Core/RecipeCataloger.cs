@@ -81,7 +81,7 @@ namespace Golem.Core
         {
             var fileSearch = new RecipeFileSearch(_searchPaths);
             fileSearch.BuildFileList();
-            
+
             PreLoadAssembliesToPreventAssemblyNotFoundError(
                 fileSearch.FoundAssemblyFiles.ToArray()
                 );
@@ -89,34 +89,20 @@ namespace Golem.Core
             ExtractRecipesFromPreLoadedAssemblies();
             return Recipes.ToArray();
         }
-
-        public IList<Recipe> CatalogueRecipesHowItShouldBeDone()
-        {
-            var fileSearch = new RecipeFileSearch(_searchPaths);
-            fileSearch.BuildFileList();
-
-
-            PreLoadAssembliesToPreventAssemblyNotFoundError(
-                fileSearch.FoundAssemblyFiles.ToArray()
-                );
-
-            ExtractRecipesFromPreLoadedAssemblies();
-            return Recipes.ToArray();
-        }
-
-        
         
         private void PreLoadAssembliesToPreventAssemblyNotFoundError(FileInfo[] assemblyFiles)
         {   
             //TODO: Preloading all assemblies in the solution is BRUTE FORCE! Should separate discovery of recipes
-            //      from invocation. Perhpas use LoadForReflection during discovery. 
+            //      from invocation. Perhpas use LoadForReflection during discovery. We'd then need to have 
+            //      Assemblies loaded for real before invokation (see TaskRunner), along with satellite assemblies.
 
             foreach (var file in assemblyFiles)
                 //loading the core twice is BAD because "if(blah is RecipeAttribute)" etc will always fail
-                if( ! file.Name.StartsWith("Golem.Core") && ! LoadedAssemblies.Any(la=>la.File.FullName == file.FullName))
+                if( ! file.Name.StartsWith("Golem.Core") && ! LoadedAssemblies.Any(la=>la.File.Name == file.Name))
                 {
                     try
                     {
+                        Console.WriteLine("Loading " + file.FullName);
                         var i =  new LoadedAssemblyInfo
                                 {
                                     Assembly = Assembly.LoadFrom(file.FullName),

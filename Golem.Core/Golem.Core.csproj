@@ -46,10 +46,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
-    <Compile Include="FileSearch.cs" />
     <Compile Include="LoadedAssemblyInfo.cs" />
     <Compile Include="Locations.cs" />
     <Compile Include="Recipe.cs" />
+    <Compile Include="RecipeFileSearch.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="TaskAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

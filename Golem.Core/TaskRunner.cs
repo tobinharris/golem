@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Reflection;
+using System.Linq;
 
 namespace Golem.Core
 {
@@ -22,6 +23,10 @@ namespace Golem.Core
 
         public void Run(Recipe recipe, Task task)
         {
+            //TODO: Tasks should run in their own appdomain. 
+            //      We need to create an app domain that has the 
+            //      base dir the same as the target assembly
+            
             var recipeInstance = Activator.CreateInstance(recipe.Class);
             SetContextualInformationIfInheritsRecipeBase(recipeInstance);
             task.Method.Invoke(recipeInstance, null);
