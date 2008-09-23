@@ -15,7 +15,7 @@ namespace Golem.Runner
             Console.WriteLine("Golem (Beta) 2008\nYour friendly executable .NET build tool. \n");
 
             IList<Recipe> found;
-            RecipeCataloger finder = BuildCatalog(out found);
+            RecipeCataloger finder = CreateCataloger(out found);
             
             if(args.Length > 0)
             {
@@ -53,13 +53,14 @@ namespace Golem.Runner
             
         }
 
-        private static RecipeCataloger BuildCatalog(out IList<Recipe> found)
+        private static RecipeCataloger CreateCataloger(out IList<Recipe> found)
         {
             RecipeCataloger finder;
             
             var config = new Configuration();
 
-            if (config.SearchPaths.Count > 0)
+            //TODO: Remove false when ready. Caching location of recipes isn't going to be useful until we can dynamically load dependant assemblies on the fly
+            if (false && config.SearchPaths.Count > 0)
                 finder = new RecipeCataloger(config.SearchPaths.ToArray());
             else
             {

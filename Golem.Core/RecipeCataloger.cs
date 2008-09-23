@@ -102,7 +102,6 @@ namespace Golem.Core
                 {
                     try
                     {
-                        Console.WriteLine("Loading " + file.FullName);
                         var i =  new LoadedAssemblyInfo
                                 {
                                     Assembly = Assembly.LoadFrom(file.FullName),
@@ -112,7 +111,7 @@ namespace Golem.Core
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("Ooops: " + e.Message);
+                        //Console.WriteLine("Ooops: " + e.Message);
                     }
                 }
 
