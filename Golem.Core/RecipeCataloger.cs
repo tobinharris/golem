@@ -79,9 +79,9 @@ namespace Golem.Core
         /// <returns></returns>
         public IList<Recipe> CatalogueRecipes()
         {
-            var fileSearch = new FileSearch(_searchPaths);
+            var fileSearch = new RecipeFileSearch(_searchPaths);
             fileSearch.BuildFileList();
-
+            
             PreLoadAssembliesToPreventAssemblyNotFoundError(
                 fileSearch.FoundAssemblyFiles.ToArray()
                 );
@@ -90,10 +90,27 @@ namespace Golem.Core
             return Recipes.ToArray();
         }
 
+        public IList<Recipe> CatalogueRecipesHowItShouldBeDone()
+        {
+            var fileSearch = new RecipeFileSearch(_searchPaths);
+            fileSearch.BuildFileList();
+
+
+            PreLoadAssembliesToPreventAssemblyNotFoundError(
+                fileSearch.FoundAssemblyFiles.ToArray()
+                );
+
+            ExtractRecipesFromPreLoadedAssemblies();
+            return Recipes.ToArray();
+        }
+
         
         
         private void PreLoadAssembliesToPreventAssemblyNotFoundError(FileInfo[] assemblyFiles)
         {   
+            //TODO: Preloading all assemblies in the solution is BRUTE FORCE! Should separate discovery of recipes
+            //      from invocation. Perhpas use LoadForReflection during discovery. 
+
             foreach (var file in assemblyFiles)
                 //loading the core twice is BAD because "if(blah is RecipeAttribute)" etc will always fail
                 if( ! file.Name.StartsWith("Golem.Core") && ! LoadedAssemblies.Any(la=>la.File.FullName == file.FullName))
