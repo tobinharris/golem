@@ -1,31 +1,50 @@
 Golem .NET Build Tool
 ======================================================================
 
-By Tobin Harris [http://www.tobinharris.com](http://www.tobinharris.com)
+By [Tobin Harris](mailto:tobin@tobinharris.com) [http://www.tobinharris.com](http://www.tobinharris.com)
 
 About Golem
 -----------
 
-Golem is a simple build tool for Microsoft .NET 3.5. 
-It lets you specify build tasks in regular c# code.
-You can run those in various ways: from the command line, a GUI runner, or from within visual studio. 
+Golem is a simple build tool for Microsoft .NET inspired by Rake and NUnit. It lets you write useful build scripts in regular c# code and run them during development. 
 
-Advantages include:
+Here is a taste of some Golem recipes and their tasks (this is what you type into the command line): 
+
+	golem test:units		# Run all unit NUnit tests in the solution
+	golem logs:clear		# Clear all log files that my app generates
+	golem iis:restart		# Restarts IIS
+	golem ndepend:top10		# Print out NDepend top 10 problems report 
+	golem nhib:mappings		# Summarise NHibernate mappings (class -> table)
+	golem nhib:dbreset		# Drop and recreate the development database using NHibernate Mappings
+	golem stats:code		# Print out a count of LOC, classes and functions.
+	golem solution:clone	# Clone a new copy of this solution, pass in NS=newnamespace
+	golem deploy:staging	# Push solution live to staging servers
+
+The plan is to have recipes for all sorts of useful things. Including NUnit, NHibernate, Linq 2 SQL, code metrics, log files you name it!... 
+
+Visual Studio integration is also being considered, so that you can run tasks from there. Also, a pretty GUI is in the pipe-line too.
+
+Why Golem?
+----------
+
+Golem lets you do a few useful things:
 
 	* Create custom tasks and recipes in good old c# or VB.NET code. 
-	* Flexible. Create tasks for any purpose (testing, build, deployment, nhibernate, db, documentation, code metrics, reporting etc) 
+	* Create tasks for any purpose 
+	* ..Testing, build, deployment, nhibernate, db, documentation, code metrics, reporting etc).  
+	* ..If you can write it in .NET code, you can automate it with Golem!
 	* No learning new build languages or tools	
 	* Quick and easy to write
 	* Tasks are easy to run. Invoke from the command line or GUI runner.	
 	* Share recipes between projects
 	* Share recipes with the community		
 
-Golem is currently under development by Tobin Harris, and was inspired by Ruby Rake.
+Golem is an experiment with writing a build system, but it will mature if people like it! Other cool looking Open Source build systems include [Psake](http://code.google.com/p/psake/) which uses Powershell, [Boobs](http://code.google.com/p/boo-build-system/) which uses the Boo language, and [Rake](http://rake.rubyforge.org/) which uses Ruby.
 
-Build Recipes & Tasks
----------------------
+Writing Build Recipes & Tasks
+-----------------------------
 
-If you've used a unit testing framework, then Golem code will be familiar. 
+If you've used a unit testing framework, then Golem will be familiar territory. 
 
 Just as NUnit has Test Fixtures and Tests, Golem has Build Recipes and Tasks.
 
@@ -115,16 +134,14 @@ Watch out for some cool build tasks in the making...
 	golem iis:restart             # Restart local IIS (Use IP=X.X.X.X for remote
 	golem iis:backupconfigs       # Backup IIS configuration files (into project folder here)
 
-Ready for Shaping
------------------
-Golem is still in BETA. I'm getting some value from it in my personal projects right now, and you can too. 
+Early Days
+----------
+**WARNING:** Golem is still in early development. I'm getting some value from it in my personal projects right now, and you can too. 
 BUT, it's probably not not quite ready for use on commercial projects yet. The code base is still unstable.
 
-Coders Needed
--------------
-If you're interested in helping with Golem, then let me know. 
+Get Involved
+------------
+Download and try it out. If you're interested in helping with Golem, then let me know. 
 Also, feel free to send your ideas, thoughts or findings to [tobin@tobinharris.com](tobin@tobinharris.com). 
-		
-
 
 
