@@ -8,16 +8,16 @@ About Golem
 
 Golem is a simple build tool for Microsoft .NET inspired by Rake and NUnit. It lets you write useful build scripts in regular c# code and run them during development. 
 
-Here is a taste of some Golem recipes and their tasks (this is what you type into the command line): 
+Here is a taste of some *possible* Golem recipes and their tasks. I have *some* of these working already. This is what you type into the command line: 
 
-	golem test:units		# Run all unit NUnit tests in the solution
+	golem test:units		# Run all unit NUnit tests in the solution 
 	golem logs:clear		# Clear all log files that my app generates
-	golem iis:restart		# Restarts IIS
+	golem iis:restart		# Restarts IIS 
 	golem ndepend:top10		# Print out NDepend top 10 problems report 
 	golem nhib:mappings		# Summarise NHibernate mappings (class -> table)
-	golem nhib:dbreset		# Drop and recreate the development database using NHibernate Mappings
-	golem stats:code		# Print out a count of LOC, classes and functions.
-	golem solution:clone	# Clone a new copy of this solution, pass in NS=newnamespace
+	golem nhib:dbreset		# Drop and recreate the development database using NHibernate Mappings 
+	golem stats:code		# Print out a count of LOC, classes and functions. 
+	golem solution:clone	# Clone a new copy of this solution, pass in NS=newnamespace 
 	golem deploy:staging	# Push solution live to staging servers
 
 The plan is to have recipes for all sorts of useful things. Including NUnit, NHibernate, Linq 2 SQL, code metrics, log files you name it!... 
@@ -29,15 +29,15 @@ Why Golem?
 
 Golem lets you do a few useful things:
 
-	* Create custom tasks and recipes in good old c# or VB.NET code. 
-	* Create tasks for any purpose 
-	* ..Testing, build, deployment, nhibernate, db, documentation, code metrics, reporting etc).  
-	* ..If you can write it in .NET code, you can automate it with Golem!
-	* No learning new build languages or tools	
-	* Quick and easy to write
-	* Tasks are easy to run. Invoke from the command line or GUI runner.	
-	* Share recipes between projects
-	* Share recipes with the community		
+* Create custom tasks and recipes in good old c# or VB.NET code. 
+* Create tasks for any purpose 
+* ..Testing, build, deployment, nhibernate, db, documentation, code metrics, reporting etc).  
+* ..If you can write it in .NET code, you can automate it with Golem!
+* No learning new build languages or tools	
+* Quick and easy to write
+* Tasks are easy to run. Invoke from the command line or GUI runner.	
+* Share recipes between projects
+* Share recipes with the community		
 
 Golem is an experiment with writing a build system, but it will mature if people like it! Other cool looking Open Source build systems include [Psake](http://code.google.com/p/psake/) which uses Powershell, [Boobs](http://code.google.com/p/boo-build-system/) which uses the Boo language, and [Rake](http://rake.rubyforge.org/) which uses Ruby.
 
@@ -143,5 +143,20 @@ Get Involved
 ------------
 Download and try it out. If you're interested in helping with Golem, then let me know. 
 Also, feel free to send your ideas, thoughts or findings to [tobin@tobinharris.com](tobin@tobinharris.com). 
+
+Vision
+------
+It's important to have a vision, even if it's naive :) The vision for Golem is as follows:
+
+* The defacto build "swiss army knife" for automating development tasks
+* Visual Studio integration, command line and stand-alone runner
+* Totally easy to understand and start using 
+* Easy to share recipes and get huge leverage from other peoples work
+* Integration with popular CI servers 
+* Mono compatible
+* Installs with useful ready-to-use recipes for all popular tools and technologies (ASP.NET, NUnit, MVC, Linq 2 SQL, NHibernate, NDepend, SQL Server, Documentation, Deployment etc)
+* Ability to list, download and start using new recipes at the click of a button (or tap on the keybaord)
+* Self updating
+* Vendors write recipes and deploy them with their tools.
 
 
