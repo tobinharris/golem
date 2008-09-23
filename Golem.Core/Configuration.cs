@@ -37,7 +37,7 @@ namespace Golem.Core
         /// Paths where DLLs or EXEs containing recipes are. 
         /// Can be relative or absolute,and contain * wildcard
         /// </summary>
-        public List<string> RecipeSearchHints { get { return _memento.RecipeSearchHints; } }
+        public List<string> SearchPaths { get { return _memento.RecipeSearchHints; } }
 
         private void CreateNew(FileInfo file)
         {

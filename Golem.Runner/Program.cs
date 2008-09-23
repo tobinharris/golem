@@ -12,14 +12,25 @@ namespace Golem.Runner
     {
         public static void Main(string[] args)
         {
-            var finder = new RecipeCataloger(Environment.CurrentDirectory);
-            var found = finder.CatalogueRecipes();
+            Console.WriteLine("Golem (Beta) 2008\nYour friendly executable .NET build tool. \n");
 
+            IList<Recipe> found;
+            RecipeCataloger finder = BuildCatalog(out found);
+            
             if(args.Length > 0)
             {
-                if(args[0].ToLower() == "-t")
+                if(args[0] == "-T")
                 {
+                    
                     ShowList(found);
+                    return;
+                }
+                else if(args[0].ToLower() == "-?")
+                {
+                    Console.WriteLine("Help: \n");
+                    Console.WriteLine("golem -T   # List build tasks");
+                    Console.WriteLine("golem -?   # Show this help");
+                    Console.WriteLine("golem -?   # Show this help");
                     return;
                 }
 
@@ -29,14 +40,41 @@ namespace Golem.Runner
                 if(parts.Length == 2)
                     runner.Run(parts[0],parts[1]);
                 else
-                    Console.WriteLine("Error: don't know what to do with that. \n\nTry: golem -t\n\n...to see commands.");
+                {
+                    Console.WriteLine("Type golem -? for help, or try one of the following tasks:\n");
+                    ShowList(found);
+                }
             }
             else
             {
-                Console.WriteLine("Golem (Beta) - Your friendly executable .NET build tool.");
+                
                 ShowList(found);
             }
             
+        }
+
+        private static RecipeCataloger BuildCatalog(out IList<Recipe> found)
+        {
+            RecipeCataloger finder;
+            
+            var config = new Configuration();
+
+            if (config.SearchPaths.Count > 0)
+                finder = new RecipeCataloger(config.SearchPaths.ToArray());
+            else
+            {
+                Console.WriteLine("Scanning directories for Build Recipes (could take a while)...");
+                finder = new RecipeCataloger(Environment.CurrentDirectory);
+            }
+
+            found = finder.CatalogueRecipes();
+
+            if(config.SearchPaths.Count == 0)
+            {
+                config.SearchPaths.AddRange(finder.LoadedAssemblies.Select(s=>s.File.FullName));
+                config.Save();
+            }
+            return finder;
         }
 
         private static void ShowList(IList<Recipe> found)

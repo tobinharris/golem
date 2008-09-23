@@ -98,12 +98,19 @@ namespace Golem.Core
                 //loading the core twice is BAD because "if(blah is RecipeAttribute)" etc will always fail
                 if( ! file.Name.StartsWith("Golem.Core") && ! LoadedAssemblies.Any(la=>la.File.FullName == file.FullName))
                 {
-                    _loadedAssemblies.Add(
-                        new LoadedAssemblyInfo
-                            {
-                                Assembly = Assembly.LoadFrom(file.FullName),
-                                File = file
-                            }); 
+                    try
+                    {
+                        var i =  new LoadedAssemblyInfo
+                                {
+                                    Assembly = Assembly.LoadFrom(file.FullName),
+                                    File = file
+                                };
+                        _loadedAssemblies.Add(i);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Ooops: " + e.Message);
+                    }
                 }
 
             
@@ -112,8 +119,16 @@ namespace Golem.Core
         private void ExtractRecipesFromPreLoadedAssemblies()
         {
             foreach(var la in LoadedAssemblies)
-                foreach (var type in la.Assembly.GetTypes())
-                    ExtractRecipesFromType(type, la);
+                try
+                {
+                    foreach (var type in la.Assembly.GetTypes())
+                        ExtractRecipesFromType(type, la);
+                }
+                catch (ReflectionTypeLoadException e)
+                {
+//                    foreach(var ex in e.LoaderExceptions)
+//                        Console.WriteLine("Load Exception: " + ex.Message);
+                }
             
         }
 

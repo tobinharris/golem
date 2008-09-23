@@ -40,7 +40,7 @@ namespace Golem.Test
             cataloger.CatalogueRecipes();
 
             if(config.IsNew)
-                config.RecipeSearchHints.AddRange(
+                config.SearchPaths.AddRange(
                     cataloger.LoadedAssembliesContainingRecipes.Select(la=>la.Assembly.FullName)
                     );
 
@@ -48,7 +48,7 @@ namespace Golem.Test
 
             var config2 = new Configuration();
             Assert.IsFalse(config2.IsNew);
-            Assert.AreEqual(1, config2.RecipeSearchHints.Count);
+            Assert.AreEqual(1, config2.SearchPaths.Count);
         }
 
         [Test]
@@ -57,10 +57,10 @@ namespace Golem.Test
             var config = new Configuration();
             var cataloger = new RecipeCataloger(Environment.CurrentDirectory);
             cataloger.CatalogueRecipes();
-            config.RecipeSearchHints.AddRange(cataloger.LoadedAssembliesContainingRecipes.Select(la => la.File.FullName));
+            config.SearchPaths.AddRange(cataloger.LoadedAssembliesContainingRecipes.Select(la => la.File.FullName));
             Assert.Greater(cataloger.AssembliesExamined.Count, 1);
 
-            var cataloger2 = new RecipeCataloger(config.RecipeSearchHints.ToArray());
+            var cataloger2 = new RecipeCataloger(config.SearchPaths.ToArray());
             cataloger2.CatalogueRecipes();
             Assert.AreEqual(1, cataloger2.AssembliesExamined.Count);
 
