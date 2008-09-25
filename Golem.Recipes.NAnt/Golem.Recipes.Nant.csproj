@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{30A6D3AC-8EB8-428F-9C1E-5131643F7EBF}</ProjectGuid>
+    <ProjectGuid>{114B7DE4-297E-4FBC-9E0D-FCF07372464A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Golem.Test</RootNamespace>
-    <AssemblyName>Golem.Test</AssemblyName>
+    <RootNamespace>Golem.Recipes.Nant</RootNamespace>
+    <AssemblyName>Golem.Recipes.Nant</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,9 +31,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+    <Reference Include="NAnt.Core, Version=0.85.2478.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files\NUnit 2.4.7\bin\nunit.framework.dll</HintPath>
+      <HintPath>..\..\nant-0.85\bootstrap\NAnt.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NAnt.DotNetTasks, Version=0.85.2478.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\nant-0.85\bootstrap\NAnt.DotNetTasks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -49,20 +53,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DemoRecipe.cs" />
-    <Compile Include="FinderConfigurationFixture.cs" />
-    <Compile Include="NantRecipeFixure.cs" />
-    <Compile Include="RecipeDiscoveryFixture.cs" />
+    <Compile Include="GRegexTask.cs" />
+    <Compile Include="GXmlPeekTask.cs" />
+    <Compile Include="NantRecipe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Golem.Core\Golem.Core.csproj">
       <Project>{267A8DF5-2B11-470E-8878-BE6E7244B713}</Project>
       <Name>Golem.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Golem.Recipes.NAnt\Golem.Recipes.Nant.csproj">
-      <Project>{114B7DE4-297E-4FBC-9E0D-FCF07372464A}</Project>
-      <Name>Golem.Recipes.Nant</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

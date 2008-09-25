@@ -21,15 +21,16 @@ namespace Golem.Core
             cataloger = aCataloger;
         }
 
-        public void Run(Recipe recipe, Task task)
+
+        public void Run(Recipe recipe, Task task, params object[] parameters )
         {
-            //TODO: Tasks should run in their own appdomain. 
+            //TODO: Tasks should run in their own appdomain? 
             //      We need to create an app domain that has the 
             //      base dir the same as the target assembly
             
             var recipeInstance = Activator.CreateInstance(recipe.Class);
             SetContextualInformationIfInheritsRecipeBase(recipeInstance);
-            task.Method.Invoke(recipeInstance, null);
+            task.Method.Invoke(recipeInstance, parameters);
         }
 
         private void SetContextualInformationIfInheritsRecipeBase(object recipeInstance)
@@ -44,10 +45,13 @@ namespace Golem.Core
             
         }
 
+      
+
         //TODO: Run is Too long
         //TODO: Nesting depth is too deep
-        public void Run(string recipeName, string taskName)
+        public void Run(string recipeName, string taskName, params object[] para)
         {
+            
             if(cataloger.Recipes.Count==0)
                 cataloger.CatalogueRecipes();
 
@@ -61,9 +65,9 @@ namespace Golem.Core
                         {
                             foreach(var methodInfo in t.DependsOnMethods)
                             {
-                                Run(r, r.GetTaskForMethod(methodInfo));
+                                Run(r, r.GetTaskForMethod(methodInfo), para);
                             }
-                            Run(r, t);
+                            Run(r, t, para);
                             return;
                         }
                     }

@@ -11,8 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Golem.Build", "Golem.Build\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Readme", "Readme", "{5ADDCA30-41AD-4EFD-BC98-08C7924EADC7}"
 	ProjectSection(SolutionItems) = preProject
-		README.txt = README.txt
+		README.markdown = README.markdown
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Golem.Recipes.Nant", "Golem.Recipes.NAnt\Golem.Recipes.Nant.csproj", "{114B7DE4-297E-4FBC-9E0D-FCF07372464A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,10 @@ Global
 		{9F3F3B09-AB90-42E0-B099-81E8BB505954}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F3F3B09-AB90-42E0-B099-81E8BB505954}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F3F3B09-AB90-42E0-B099-81E8BB505954}.Release|Any CPU.Build.0 = Release|Any CPU
+		{114B7DE4-297E-4FBC-9E0D-FCF07372464A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{114B7DE4-297E-4FBC-9E0D-FCF07372464A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{114B7DE4-297E-4FBC-9E0D-FCF07372464A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{114B7DE4-297E-4FBC-9E0D-FCF07372464A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -67,6 +67,25 @@ namespace Golem.Test
             Assert.AreEqual("LIST", AppDomain.CurrentDomain.GetData("TEST"));
         }
 
+        [Test]
+        public void Can_Execute_Tasks_With_Parameters()
+        {
+            var runner = new TaskRunner(cataloger);
+            var demo5 = found[4];
+            Assert.AreEqual("demo5", found[4].Name);
+            Assert.AreEqual("foo", found[4].Tasks[0].Name);
+            runner.Run(demo5,demo5.Tasks[0],"TESTING","123");
+        }
+
+        [Test]
+        public void Can_Execute_Tasks_With_Parameters_By_Name()
+        {
+            var runner = new TaskRunner(cataloger);
+                runner.Run("demo5", "foo", "TESTING", "123");
+        }
+
+        
+
         
         [Test, Ignore]
         public void Can_Run_All_Default_Tasks()

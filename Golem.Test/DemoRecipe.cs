@@ -118,4 +118,14 @@ namespace Golem.Test
             Console.WriteLine(this.AllRecipes.Count);
         }
     }
+
+    [Recipe]
+    public class Demo5Recipe
+    {
+        [Task]
+        public void Foo(string a, string b)
+        {
+            Console.WriteLine("{0},{1}", a, b);
+        }
+    }
 }

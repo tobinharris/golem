@@ -37,8 +37,17 @@ namespace Golem.Runner
                 var parts = args[0].Split(':');
                 var runner = new TaskRunner(finder);
                 
-                if(parts.Length == 2)
+                if(parts.Length == 2 && args.Length == 1)
+                {
                     runner.Run(parts[0],parts[1]);
+                }
+                else if(parts.Length ==2 && args.Length > 1)
+                {
+                    //TODO: Tidy this up and refactor
+                    var dest = new string[args.Length-1];
+                    Array.Copy(args,1,dest,0,args.Length-1);
+                    runner.Run(parts[0],parts[1],dest);
+                }
                 else
                 {
                     Console.WriteLine("Type golem -? for help, or try one of the following tasks:\n");
