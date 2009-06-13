@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{114B7DE4-297E-4FBC-9E0D-FCF07372464A}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -31,13 +31,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NAnt.Core, Version=0.85.2478.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NAnt.Core, Version=0.85.2478.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\nant-0.85\bootstrap\NAnt.Core.dll</HintPath>
+      <HintPath>..\Golem.Dependencies\NAnt\NAnt.Core.dll</HintPath>
     </Reference>
-    <Reference Include="NAnt.DotNetTasks, Version=0.85.2478.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NAnt.DotNetTasks, Version=0.85.2478.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\nant-0.85\bootstrap\NAnt.DotNetTasks.dll</HintPath>
+      <HintPath>..\Golem.Dependencies\NAnt\NAnt.DotNetTasks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
